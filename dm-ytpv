@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "usage: $0 <playlist-json>"
+    exit 1
+fi
+
+JSON="$1"
+
+if [ ! -e "$JSON" ]; then
+    echo "File not found: $1"
+    exit 1
+fi
+
+
+# NOTE: this is assuming a particular JSON format as output by the ytp-json.sh script in this directory, not the
+# raw json returned by Youtube.
+VIDEO_PICKED=$(jq '.videos[].title' "$JSON" | fuzzel -d -w 100)
+[ -z "$VIDEO_PICKED" ] && exit 0
+
+VIDEO_URL=$(jq ".videos[] | select(.title == $VIDEO_PICKED) | .url" "$JSON" | tr -d '"')
+[ -z "$VIDEO_URL" ] && exit 0
+
+# play the selected video using yv.sh (wraps mpv)
+. $HOME/.config/ytpm/config
+$YMPV "$VIDEO_URL"

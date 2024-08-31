@@ -1,0 +1,20 @@
+#!/bin/bash
+
+. $HOME/.config/ytpm/config
+
+# provide list of tracked playlist names for selection
+NAMES=$($YTPM list-all)
+SELECTED_NAME=$(echo "$NAMES" | fuzzel -d )
+[ -z "$SELECTED_NAME" ] && exit 0
+
+# provide menu to select a video from the playlist
+VIDEO_PICKED=$($YTPM list-playlist "$SELECTED_NAME" | fuzzel -d | tr -d '"')
+[ -z "$VIDEO_PICKED" ] && exit 0
+
+VIDEO_URL=$($YTPM get-video "$SELECTED_NAME" "$VIDEO_PICKED" | jq ".url" | tr -d '"')
+[ -z "$VIDEO_URL" ] && exit 0
+
+echo "$VIDEO_URL"
+
+# play the selected video using yv.sh (wraps mpv)
+# $YMPV "$VIDEO_URL"

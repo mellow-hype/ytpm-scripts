@@ -1,0 +1,60 @@
+#!/bin/bash
+# load config vars
+. $HOME/.config/ytpm/config
+
+SCRIPTNAME=$(basename $0)
+
+if [ "$#" == 0 ]; then
+    echo "usage: $SCRIPTNAME add <name-id> <url>"
+    echo "usage: $SCRIPTNAME list-all"
+    echo "usage: $SCRIPTNAME list-playlist <playlist-name>"
+    echo "usage: $SCRIPTNAME get-video <playlist-name> <video-name>"
+fi
+
+# ADD NEW PLAYLIST
+if [ "$1" == "add" ]; then
+    if [ -z "$2" ]; then
+        echo "usage: $SCRIPTNAME add <name-id> <url>"
+        exit 1
+    fi
+    if [ -z "$3" ]; then
+        echo "usage: $SCRIPTNAME add <name-id> <url>"
+        exit 1
+    fi
+    UPDATE="$YTPM_BASEDIR/util/ytp-update.sh"
+
+    # add the new entry to the plist file
+    echo "$2,$3" >> $PLIST_FILE
+    "$UPDATE"
+    exit 0
+fi
+
+## LIST ALL PLAYLISTS
+if [ "$1" == "list-all" ]; then
+    cat $PLIST_FILE | cut -d "," -f 1
+    exit 0
+fi
+
+
+# LIST VIDEOS FOR A PLAYLIST
+if [ "$1" == "list-playlist" ]; then
+    if [ -z "$2" ]; then
+        echo "usage: $0 list-playlist <name>"
+        exit 1
+    fi
+    cat "$PLIST_DIR/$2.json" | jq '.videos[].title'
+    exit 0
+fi
+
+# GET JSON FOR SPECIFIC VIDEO BY NAME
+if [ "$1" == "get-video" ]; then
+    if [ "$#" != 3 ]; then
+        echo "usage: $0 get-video <playlist> <name>"
+        exit 1
+    fi
+
+    plist="$2"
+    name="$3"
+    cat "$PLIST_DIR/$plist.json" | jq ".videos[] | select(.title == \"$name\")"
+    exit 0
+fi

@@ -1,0 +1,15 @@
+#!/bin/sh
+CONFIG_BASE=$HOME/.config/ytpm
+
+export YTPM_BINDIR="$HOME/bin"
+export YTPM="$YTPM_BINDIR/ytpm"
+export YMPV="$YTPM_BINDIR/ympv"
+
+export YTPMDIR=$HOME/.local/ytpm
+export PLIST_FILE="$YTPMDIR/playlists.conf"
+export PLIST_DIR="$YTPMDIR/playlists"
+
+if [ ! -d "$PLIST_DIR" ]; then
+    mkdir -p "$PLIST_DIR"
+    touch $PLIST_FILE
+fi
