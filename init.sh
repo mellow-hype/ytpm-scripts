@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 CONFDIR="$HOME/.config/ytpm"
 BINDIR=$HOME/bin
 

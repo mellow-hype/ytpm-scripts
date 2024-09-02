@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 CONFIG_BASE=$HOME/.config/ytpm
 
 export YTPM_BINDIR="$HOME/bin"
